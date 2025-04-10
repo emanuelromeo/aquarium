@@ -34,12 +34,33 @@ public class Fish {
     @Column(name = "age")
     private Long age;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "aquarium_id")
     private Aquarium aquarium;
 
+
+    // Constructors
+
     public Fish() {
     }
+
+    public Fish(String name, FishSpecies species) {
+        this.name = name;
+        this.species = species;
+        this.hunger = 0;
+        this.health = 100;
+        this.age = 0L;
+    }
+
+
+    // Methods
+
+    public void feed(Integer foodQuantity) {
+        health = Math.min(100, health + foodQuantity);
+    }
+
+
+    // Getter and Setter
 
     public Long getId() {
         return id;
@@ -87,5 +108,13 @@ public class Fish {
 
     public void setAge(@Min(value = 0) Long age) {
         this.age = age;
+    }
+
+    public Aquarium getAquarium() {
+        return aquarium;
+    }
+
+    public void setAquarium(Aquarium aquarium) {
+        this.aquarium = aquarium;
     }
 }

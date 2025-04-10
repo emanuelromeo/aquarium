@@ -29,6 +29,12 @@ public class Aquarium {
     @OneToMany(mappedBy = "aquarium")
     private List<Fish> fishes;
 
+
+    // Constructors
+
+    public Aquarium() {
+    }
+
     public Aquarium(Long id, Long capacity, Integer clearness, Integer temperature, List<Fish> fishes) {
         this.id = id;
         this.capacity = capacity;
@@ -36,6 +42,17 @@ public class Aquarium {
         this.temperature = temperature;
         this.fishes = fishes;
     }
+
+
+    // Methods
+
+    public void dirty(Integer dirtQuantity) {
+        clearness = Math.max(0, clearness - dirtQuantity);
+    }
+
+
+
+    // Getter and Setter
 
     public Long getId() {
         return id;
