@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,18 +24,41 @@ public class AquariumService {
     @Autowired
     private FishRepository fishRepository;
 
+    /**
+     * Saves the given aquarium in the database.
+     * @param aquarium
+     * @return the saved aquarium.
+     */
     public Aquarium save(Aquarium aquarium) {
         return aquariumRepository.save(aquarium);
     }
 
+    /**
+     * Finds all aquariums in database.
+     * @return the list of found aquariums.
+     */
     public List<Aquarium> findAll() {
         return aquariumRepository.findAll();
     }
 
+    /**
+     * Finds the aquarium with the given id.
+     * @param id
+     * @return an optional containing the found aquarium.
+     */
     public Optional<Aquarium> findById(Long id) {
         return aquariumRepository.findById(id);
     }
 
+    /**
+     * Saves and put a new fish into the aquarium with the given id.
+     * @param aquariumId
+     * @param fishName
+     * @param fishSpecies
+     * @return the saved fish.
+     * @throws AquariumNotFoundException
+     * @throws AquariumCapacityExceededException
+     */
     public Fish addFish(Long aquariumId, String fishName, FishSpecies fishSpecies) throws AquariumNotFoundException, AquariumCapacityExceededException {
 
         // Find aquarium by id
@@ -60,10 +82,21 @@ public class AquariumService {
 
     }
 
-    // Food quantity is a value between 0 (no food)
-    // and 100 (enough food to feed all fishes if capacity were reached, and they were all at hunger level 100).
-    // Food is always equally spread between all fishes, even if a fish isn't hungry.
-    // Exceeded food dirties the aquarium.
+
+
+
+    /**
+     * Gives the given food amount to all fishes of the aquarium with the given id.
+     * Note:
+     * Food quantity is a value between 0 (no food)
+     * and 100 (enough food to feed all fishes if capacity were reached, and they were all at hunger level 100).
+     * Food is always equally spread between all fishes, even if a fish isn't hungry.
+     * Exceeded food dirties the aquarium.
+     * @param aquariumId
+     * @param foodQuantity
+     * @return the updated aquarium.
+     * @throws AquariumNotFoundException
+     */
     public Aquarium feedFishes(Long aquariumId, Integer foodQuantity) throws AquariumNotFoundException {
 
         // Find aquarium by id
@@ -114,6 +147,9 @@ public class AquariumService {
 
     }
 
+    /**
+     * Increase hunger and updates health of all fishes and decrease the clearness of all aquariums.
+     */
     @Transactional
     public void updateStats() {
 
@@ -161,6 +197,9 @@ public class AquariumService {
         }
     }
 
+    /**
+     * Increases all fishes age.
+     */
     @Transactional
     public void updateFishesAge() {
 
@@ -180,5 +219,23 @@ public class AquariumService {
 
             }
         }
+    }
+
+
+    /**
+     * Cleans the aquarium with the given id.
+     * @param id
+     * @return the updated aquarium.
+     * @throws AquariumNotFoundException
+     */
+    public Aquarium clean(Long id) throws AquariumNotFoundException {
+        Optional<Aquarium> aquarium = aquariumRepository.findById(id);
+
+        if (aquarium.isEmpty()) {
+            throw new AquariumNotFoundException("Aquarium with id " + id + " not found");
+        }
+
+        aquarium.get().clean();
+        return aquariumRepository.save(aquarium.get());
     }
 }

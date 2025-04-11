@@ -10,6 +10,9 @@ import java.util.List;
 @Table(name = "aquariums")
 public class Aquarium {
 
+    private final Integer STARTING_CLEARNESS = 100;
+    private final Integer STARTING_TEMPERATURE = 30;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,11 +23,11 @@ public class Aquarium {
     @Min(0)
     @Max(100)
     @Column(name = "clearness")
-    private Integer clearness = 100;
+    private Integer clearness = STARTING_CLEARNESS;
 
     @Min(-273)
     @Column(name = "temperature")
-    private Integer temperature = 30;
+    private Integer temperature = STARTING_TEMPERATURE;
 
     @OneToMany(mappedBy = "aquarium")
     private List<Fish> fishes;
@@ -48,6 +51,10 @@ public class Aquarium {
 
     public void dirty(Integer dirtQuantity) {
         clearness = Math.max(0, clearness - dirtQuantity);
+    }
+
+    public void clean() {
+        clearness = 100;
     }
 
 

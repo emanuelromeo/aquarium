@@ -88,8 +88,19 @@ public class AquariumController {
         }
     }
 
-    @PutMapping("/update-stats")
-    public ResponseEntity<?> updateStats() {
-        return ResponseEntity.ok().build();
+    @PutMapping("{aquariumId}/clean")
+    public ResponseEntity<?> clean(@PathVariable Long aquariumId) {
+
+        try {
+
+            Aquarium aquarium = aquariumService.clean(aquariumId);
+            return ResponseEntity.ok(aquarium);
+
+        } catch (AquariumNotFoundException e) {
+
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
     }
 }

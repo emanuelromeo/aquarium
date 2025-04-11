@@ -10,6 +10,10 @@ import jakarta.validation.constraints.Min;
 @Table(name = "fishes")
 public class Fish {
 
+    private final Integer STARTING_HEALTH = 100;
+    private final Integer STARTING_HUNGER = 0;
+    private final Long STARTING_AGE = 0L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,16 +28,16 @@ public class Fish {
     @Min(value = 0)
     @Max(value = 100)
     @Column(name = "hunger")
-    private Integer hunger = 90;
+    private Integer hunger = STARTING_HUNGER;
 
     @Min(value = 0)
     @Max(value = 100)
     @Column(name = "health")
-    private Integer health = 5;
+    private Integer health = STARTING_HEALTH;
 
     @Min(value = 0)
     @Column(name = "age")
-    private Long age = 0L;
+    private Long age = STARTING_AGE;
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
