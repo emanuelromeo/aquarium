@@ -1,6 +1,7 @@
 package com.develhope.aquarium.entities;
 
 import com.develhope.aquarium.enumerations.FishSpecies;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,18 +24,19 @@ public class Fish {
     @Min(value = 0)
     @Max(value = 100)
     @Column(name = "hunger")
-    private Integer hunger;
+    private Integer hunger = 90;
 
     @Min(value = 0)
     @Max(value = 100)
     @Column(name = "health")
-    private Integer health;
+    private Integer health = 5;
 
     @Min(value = 0)
     @Column(name = "age")
-    private Long age;
+    private Long age = 0L;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "aquarium_id")
     private Aquarium aquarium;
 
@@ -47,16 +49,33 @@ public class Fish {
     public Fish(String name, FishSpecies species) {
         this.name = name;
         this.species = species;
-        this.hunger = 0;
-        this.health = 100;
-        this.age = 0L;
     }
 
 
     // Methods
 
     public void feed(Integer foodQuantity) {
-        health = Math.min(100, health + foodQuantity);
+        hunger = Math.max(0, hunger - foodQuantity);
+    }
+
+    public void updateHealth() {
+        if (hunger <= 30) {
+            health = Math.min(100, health + 1);
+        } else if (hunger > 70) {
+            health = Math.max(0, health - 1);
+        }
+    }
+
+    public void decreaseHealth() {
+        health = Math.max(0, health - 1);
+    }
+
+    public void increaseHunger() {
+        hunger = Math.min(100, hunger + 1);
+    }
+
+    public void increaseAge() {
+        age++;
     }
 
 

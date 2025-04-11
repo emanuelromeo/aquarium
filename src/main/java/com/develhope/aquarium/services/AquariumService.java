@@ -9,7 +9,10 @@ import com.develhope.aquarium.repositories.AquariumRepository;
 import com.develhope.aquarium.repositories.FishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +31,10 @@ public class AquariumService {
 
     public List<Aquarium> findAll() {
         return aquariumRepository.findAll();
+    }
+
+    public Optional<Aquarium> findById(Long id) {
+        return aquariumRepository.findById(id);
     }
 
     public Fish addFish(Long aquariumId, String fishName, FishSpecies fishSpecies) throws AquariumNotFoundException, AquariumCapacityExceededException {
@@ -54,7 +61,7 @@ public class AquariumService {
     }
 
     // Food quantity is a value between 0 (no food)
-    // and 100 (enough food to feed all fishes if capacity were reached and they were all at hunger level 100).
+    // and 100 (enough food to feed all fishes if capacity were reached, and they were all at hunger level 100).
     // Food is always equally spread between all fishes, even if a fish isn't hungry.
     // Exceeded food dirties the aquarium.
     public Aquarium feedFishes(Long aquariumId, Integer foodQuantity) throws AquariumNotFoundException {
@@ -68,7 +75,7 @@ public class AquariumService {
         }
 
         // Get fishes
-        List<Fish> fishes = aquarium.get().getFishes();
+        List<Fish> fishes = new ArrayList<>(aquarium.get().getFishes());
 
         // Food quantity is related to the capacity of the aquarium.
         // If reached capacity, food quantity would be equivalent to hunger satisfied for fish,
@@ -105,5 +112,73 @@ public class AquariumService {
         // Update and return aquarium
         return aquariumRepository.save(aquarium.get());
 
+    }
+
+    @Transactional
+    public void updateStats() {
+
+        // Find all aquarium
+        List<Aquarium> aquariums = aquariumRepository.findAll();
+
+        for (Aquarium aquarium : aquariums) {
+
+            // Decrease aquarium clearness
+            aquarium.dirty(1);
+
+            // Get fish iterator
+            List<Fish> fishes = new ArrayList<>(aquarium.getFishes());
+
+            for (Fish fish : fishes) {
+
+                // Increase fish hunger
+                fish.increaseHunger();
+
+                // Update fish health
+                fish.updateHealth();
+
+                // If aquarium is dirty, decrease fish health
+                if (aquarium.getClearness() < 30) {
+                    fish.decreaseHealth();
+                }
+
+                if (fish.getHealth() <= 0) {
+
+                    // If fish died delete it ...
+                    aquarium.getFishes().remove(fish);
+                    fish.setAquarium(null);
+                    fishRepository.delete(fish);
+
+                } else {
+
+                    // ... or else save it
+                    fishRepository.save(fish);
+
+                }
+            }
+
+            // Save aquarium updates
+            aquariumRepository.save(aquarium);
+        }
+    }
+
+    @Transactional
+    public void updateFishesAge() {
+
+        // Find all aquarium
+        List<Aquarium> aquariums = aquariumRepository.findAll();
+
+        for (Aquarium aquarium : aquariums) {
+
+            // Get fishes for any aquarium
+            List<Fish> fishes = new ArrayList<>(aquarium.getFishes());
+
+            for (Fish fish : fishes) {
+
+                // Increase fish age and save
+                fish.increaseAge();
+                fishRepository.save(fish);
+
+            }
+        }
     }
 }

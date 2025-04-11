@@ -20,11 +20,11 @@ public class Aquarium {
     @Min(0)
     @Max(100)
     @Column(name = "clearness")
-    private Integer clearness;
+    private Integer clearness = 100;
 
     @Min(-273)
     @Column(name = "temperature")
-    private Integer temperature;
+    private Integer temperature = 30;
 
     @OneToMany(mappedBy = "aquarium")
     private List<Fish> fishes;
@@ -49,7 +49,6 @@ public class Aquarium {
     public void dirty(Integer dirtQuantity) {
         clearness = Math.max(0, clearness - dirtQuantity);
     }
-
 
 
     // Getter and Setter

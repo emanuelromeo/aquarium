@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/aquariums")
@@ -34,8 +35,19 @@ public class AquariumController {
         return ResponseEntity.ok(aquariums);
     }
 
+    @GetMapping("/find-by-id/{id}")
+    public ResponseEntity<Aquarium> findById(@PathVariable Long id) {
+        Optional<Aquarium> aquarium = aquariumService.findById(id);
+
+        if (aquarium.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(aquarium.get());
+    }
+
     @PostMapping("{aquariumId}/add-fish")
-    public ResponseEntity<?> addFish(
+    public ResponseEntity<?> addFish (
             @PathVariable Long aquariumId,
             @RequestParam String fishName,
             @RequestParam FishSpecies fishSpecies) {
@@ -59,7 +71,7 @@ public class AquariumController {
     }
 
     @PutMapping("{aquariumId}/feed-fishes")
-    public ResponseEntity<?> feedFishes(
+    public ResponseEntity<?> feedFishes (
             @PathVariable Long aquariumId,
             @RequestParam @Min(0) @Max(100) Integer foodQuantity) {
 
@@ -74,5 +86,10 @@ public class AquariumController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 
         }
+    }
+
+    @PutMapping("/update-stats")
+    public ResponseEntity<?> updateStats() {
+        return ResponseEntity.ok().build();
     }
 }
