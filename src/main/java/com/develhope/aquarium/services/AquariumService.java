@@ -125,7 +125,7 @@ public class AquariumService {
             // Decrease aquarium clearness
             aquarium.dirty(1);
 
-            // Get fish iterator
+            // Clone fish list
             List<Fish> fishes = new ArrayList<>(aquarium.getFishes());
 
             for (Fish fish : fishes) {
