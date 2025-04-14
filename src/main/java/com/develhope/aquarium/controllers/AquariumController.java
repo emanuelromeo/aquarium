@@ -47,6 +47,27 @@ public class AquariumController {
         return ResponseEntity.ok(aquarium.get());
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Aquarium> update(
+            @PathVariable Long id,
+            @RequestBody Aquarium updatedAquarium) {
+
+        Optional<Aquarium> aquarium = aquariumService.update(id, updatedAquarium);
+
+        if (aquarium.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(aquarium.get());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+
+        aquariumService.delete(id);
+        return ResponseEntity.ok("Aquarium deleted");
+    }
+
     @PostMapping("{aquariumId}/add-fish")
     public ResponseEntity<?> addFish (
             @PathVariable Long aquariumId,

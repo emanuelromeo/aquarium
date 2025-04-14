@@ -51,6 +51,36 @@ public class AquariumService {
     }
 
     /**
+     * Updates the aquarium with the given id with values from the given updated aquarium
+     * @param id
+     * @param updatedAquarium
+     * @return an optional containing the updated aquarium
+     */
+    public Optional<Aquarium> update(Long id, Aquarium updatedAquarium) {
+
+        Optional<Aquarium> aquarium = aquariumRepository.findById(id);
+
+        if (aquarium.isEmpty()) {
+            return Optional.empty();
+        }
+
+        aquarium.get().setCapacity(updatedAquarium.getCapacity());
+        aquarium.get().setClearness(updatedAquarium.getClearness());
+        aquarium.get().setTemperature(updatedAquarium.getTemperature());
+
+        Aquarium savedAquarium = aquariumRepository.save(aquarium.get());
+        return  Optional.of(savedAquarium);
+    }
+
+    /**
+     * Deletes the aquarium with the given id
+     * @param id
+     */
+    public void delete(Long id) {
+        aquariumRepository.deleteById(id);
+    }
+
+    /**
      * Saves and put a new fish into the aquarium with the given id.
      * @param aquariumId
      * @param fishName

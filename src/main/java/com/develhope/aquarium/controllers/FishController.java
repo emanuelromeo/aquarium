@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -28,6 +29,40 @@ public class FishController {
     public ResponseEntity<List<Fish>> findAll() {
         List<Fish> fishes = fishService.findAll();
         return ResponseEntity.ok(fishes);
+    }
+
+    @GetMapping("/find-by-id/{id}")
+    public ResponseEntity<Fish> findById(
+            @PathVariable Long id) {
+
+        Optional<Fish> fish = fishService.findById(id);
+
+        if (fish.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(fish.get());
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Fish> update(
+            @PathVariable Long id,
+            @RequestBody Fish updatedFish) {
+
+        Optional<Fish> fish = fishService.update(id, updatedFish);
+
+        if (fish.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(fish.get());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+
+        fishService.deleteById(id);
+        return ResponseEntity.ok("Fish deleted");
     }
 
 }
