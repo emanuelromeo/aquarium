@@ -173,7 +173,7 @@ public class AquariumService {
                 fish.updateHealth();
 
                 // If aquarium is dirty, decrease fish health
-                if (aquarium.getClearness() < 30) {
+                if (aquarium.getClearness() <= aquarium.LOW_CLEARNESS) {
                     fish.decreaseHealth();
                 }
 

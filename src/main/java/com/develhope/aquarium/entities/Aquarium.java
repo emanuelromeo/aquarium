@@ -13,6 +13,8 @@ public class Aquarium {
     private final Integer STARTING_CLEARNESS = 100;
     private final Integer STARTING_TEMPERATURE = 30;
 
+    public final Integer LOW_CLEARNESS = 30;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,10 +51,18 @@ public class Aquarium {
 
     // Methods
 
+    /**
+     * Reduces aquarium clearness by the given dirt quantity
+     * which is expressed in percentage of max clearness of the aquarium.
+     * @param dirtQuantity
+     */
     public void dirty(Integer dirtQuantity) {
         clearness = Math.max(0, clearness - dirtQuantity);
     }
 
+    /**
+     * Set aquarium clearness to the max value.
+     */
     public void clean() {
         clearness = 100;
     }

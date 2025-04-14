@@ -14,6 +14,9 @@ public class Fish {
     private final Integer STARTING_HUNGER = 0;
     private final Long STARTING_AGE = 0L;
 
+    private final Integer LOW_HUNGER = 30;
+    private final Integer HIGH_HUNGER = 70;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,26 +61,46 @@ public class Fish {
 
     // Methods
 
+    /**
+     * Decrease fish hunger by the given quantity of food, which is expressed in percentage of the max hunger of the fish.
+     * @param foodQuantity
+     */
     public void feed(Integer foodQuantity) {
         hunger = Math.max(0, hunger - foodQuantity);
     }
 
+    /**
+     * Increases fish health if hunger is low, or decrease health if hunger is high.
+     */
     public void updateHealth() {
-        if (hunger <= 30) {
+
+        if (hunger <= LOW_HUNGER) {
             health = Math.min(100, health + 1);
-        } else if (hunger > 70) {
+        }
+
+        if (hunger > HIGH_HUNGER) {
             health = Math.max(0, health - 1);
         }
+
     }
 
+    /**
+     * Decreases fish health by 1.
+     */
     public void decreaseHealth() {
         health = Math.max(0, health - 1);
     }
 
+    /**
+     * Increases fish hunger by 1.
+     */
     public void increaseHunger() {
         hunger = Math.min(100, hunger + 1);
     }
 
+    /**
+     * Increases fish age by 1.
+     */
     public void increaseAge() {
         age++;
     }
