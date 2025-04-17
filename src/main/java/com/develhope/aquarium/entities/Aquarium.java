@@ -31,7 +31,7 @@ public class Aquarium {
     @Column(name = "temperature")
     private Integer temperature = STARTING_TEMPERATURE;
 
-    @OneToMany(mappedBy = "aquarium")
+    @OneToMany(mappedBy = "aquarium", cascade = CascadeType.ALL)
     private List<Fish> fishes;
 
 
@@ -65,6 +65,22 @@ public class Aquarium {
      */
     public void clean() {
         clearness = 100;
+    }
+
+    /**
+     * Adds the given fish to the aquarium
+     * @param fish
+     */
+    public void addFish(Fish fish) {
+        fishes.add(fish);
+    }
+
+    /**
+     * Removes the given fish from the aquarium
+     * @param fish
+     */
+    public void removeFish(Fish fish) {
+        fishes.remove(fish);
     }
 
 

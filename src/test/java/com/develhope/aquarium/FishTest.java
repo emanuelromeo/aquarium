@@ -81,7 +81,7 @@ public class FishTest {
                 .andExpect(jsonPath("$.name").value(fish.getName()));
     }
 
-    // Test PUT request to update a fish by id
+    // Test PUT request to update a fish
     @Test
     public void update() throws Exception {
         when(fishService.update(anyLong(), any(Fish.class))).thenReturn(Optional.of(fish));

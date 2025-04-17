@@ -210,7 +210,7 @@ public class AquariumService {
                 if (fish.getHealth() <= 0) {
 
                     // If fish died delete it ...
-                    aquarium.getFishes().remove(fish);
+                    aquarium.removeFish(fish);
                     fish.setAquarium(null);
                     fishRepository.delete(fish);
 
